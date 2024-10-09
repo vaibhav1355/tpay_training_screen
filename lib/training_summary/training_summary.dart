@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 
+/* listview item design */
 class CustomListTile extends StatelessWidget {
   final double height;
   final Widget leading;
@@ -35,8 +36,10 @@ class CustomListTile extends StatelessWidget {
   }
 }
 
+
 class TrainingSummary extends StatefulWidget {
   final Map<String, String> training;
+
   const TrainingSummary({Key? key, required this.training}) : super(key: key);
 
   @override
@@ -44,13 +47,13 @@ class TrainingSummary extends StatefulWidget {
 }
 
 class _TrainingSummaryState extends State<TrainingSummary> {
-
   Uint8List? _pickedFileBytes;
   File? _pickedFile;
   bool _isfilePicked = false;
 
   Color buttonColor = Color(0xffa4a4a4); // upload aur provide button color
   Color presetButtonColor  = Color(0xffd6d6d6); //present wale button ke liye color
+
 
   Future<void> _pickFile() async {
     try {
@@ -209,22 +212,230 @@ class _TrainingSummaryState extends State<TrainingSummary> {
                   ),
                 ),
               ),
-
               Padding(
                 padding: EdgeInsets.all(28.0),
                 child: Column(
                   children: [
-                    trainingCard(
-                      image: 'assets/images/tpay_training_screen_image.jpg',
-                      name: 'Training Name ',
-                      status: 'Pending',
-                      startDate: '15-09-2024',
-                      endDate: '20-09-2024',
-                      trainer: 'Anjali Singh',
-                      venue: 'Green Valley Conference Center.',
-                      isFilePicked: _isfilePicked,
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Color(0xffd8d8d8),
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            child: Image.asset(
+                              'assets/images/tpay_training_screen_image.jpg',
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 150,
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        widget.training['name'] ?? 'N/A',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff010101),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 100,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: _getStatusColor(widget.training['status']),
+                                          width: 1.0,
+                                        ),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          widget.training['status'] ?? 'N/A',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: _getStatusColor(widget.training['status']),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sit amet consectetur.',
+                                  style: TextStyle(color: Color(0xff8b8b8b)),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildDateInfo(Icons.calendar_month, 'Start Date:', widget.training['startDate'] ?? 'N/A'),
+                                    _buildDateInfo(Icons.calendar_month, 'End Date:', widget.training['endDate'] ?? 'N/A'),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                _buildInfoRow(Icons.edit_calendar_outlined, 'Trainer:', widget.training['trainer'] ?? 'N/A'),
+                                _buildInfoRow(Icons.padding, 'Venue:', widget.training['venue'] ?? 'N/A'),
+
+                                if (_isfilePicked)
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.file_copy_outlined, color: Color(0xff8b8b8b)),
+                                        SizedBox(width: 5),
+                                        InkWell(
+                                          onTap: _downloadFile,
+                                          child: Text(
+                                            'Download Certificate',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff34b7ff),
+                                              decoration: TextDecoration.underline,
+                                              decorationColor: Color(0xff34b7ff),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Text(
+                          'Mark Attendance',
+                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: 3,
+                      itemBuilder: (context, index) => Container(
+                        margin: const EdgeInsets.symmetric(vertical: 14),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(color: Color(0xffcccccc), width: 1),
+                            left: BorderSide(color: Color(0xffcccccc), width: 1),
+                            right: BorderSide(color: Color(0xffcccccc), width: 1),
+                            bottom: BorderSide(color: Color(0xff34b7ff), width: 6),
+                          ),
+                          color: Colors.white,
+                        ),
+                        child: CustomListTile(
+                          height: 100,
+                          leading: Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 16),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '25',
+                                  style: TextStyle(
+                                    color: Color(0xff8a8a8a),
+                                    fontSize: 38,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.0,
+                                  ),
+                                ),
+                                Text(
+                                  "Sep'24",
+                                  style: TextStyle(
+                                    color: Color(0xff34b7ff),
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 20,
+                                    height: 1.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          title: Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Start Time: 12:00 pm',
+                                  style: TextStyle(
+                                    color: Color(0xff626262),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  'End Time: 12:00 pm',
+                                  style: TextStyle(
+                                    color: Color(0xff626262),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          trailing: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: presetButtonColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    'Present',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildActionButton('Upload Certificate'),
+                        _buildActionButton('Provide Certificate'),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -232,239 +443,6 @@ class _TrainingSummaryState extends State<TrainingSummary> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget trainingCard({
-    required String image,
-    required String name,
-    required String status,
-    required String startDate,
-    required String endDate,
-    required String trainer,
-    required String venue,
-    required bool isFilePicked,
-  }) {
-    Color statusColor = status == 'Pending' ? Color(0xffeaa988) : Color(0xff378f61);
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Color(0xffd8d8d8),
-              width: 1.0,
-            ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-                child: Image.asset(
-                  image,
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: 150,
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            name,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff010101),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          width: 100,
-                          height: 30,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: statusColor, width: 1.0),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Center(
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: statusColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sit amet consectetur.',
-                      style: TextStyle(color: Color(0xff8b8b8b)),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildDateInfo(Icons.calendar_month, 'Start Date :', startDate),
-                        _buildDateInfo(Icons.calendar_month, 'End Date :', endDate),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    _buildInfoRow(Icons.edit_calendar_outlined, 'Trainer :', trainer),
-                    _buildInfoRow(Icons.padding, 'Venue :', venue),
-                    if (isFilePicked)
-                      GestureDetector(
-                        onTap: _downloadFile,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.file_copy_outlined,
-                              color: Color(0xff8b8b8b),
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              'Download Certificate',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xff34b7ff),
-                                decoration: TextDecoration.underline,
-                                decorationColor: Color(0xff34b7ff),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 20),
-        Row(
-          children: [
-            Text(
-              'Mark Attendance',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          itemCount: 3,
-          itemBuilder: (context, index) => Container(
-            margin: const EdgeInsets.symmetric(vertical: 14),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: Color(0xffcccccc), width: 1),
-                left: BorderSide(color: Color(0xffcccccc), width: 1),
-                right: BorderSide(color: Color(0xffcccccc), width: 1),
-                bottom: BorderSide(color: Color(0xff34b7ff), width: 6),
-              ),
-              color: Colors.white,
-            ),
-            child: CustomListTile(
-              height: 100,
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 10, right: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '25',
-                      style: TextStyle(
-                        color: Color(0xff8a8a8a),
-                        fontSize: 38,
-                        fontWeight: FontWeight.bold,
-                        height: 1.0,
-                      ),
-                    ),
-                    Text(
-                      "Sep'24",
-                      style: TextStyle(
-                        color: Color(0xff34b7ff),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              title: Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Start Time: 12:00 pm',
-                      style: TextStyle(
-                        color: Color(0xff626262),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      'End Time: 12:00 pm',
-                      style: TextStyle(
-                        color: Color(0xff626262),
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              trailing: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: presetButtonColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        'Present',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildActionButton('Upload Certificate'),
-            _buildActionButton('Provide Certificate'),
-          ],
-        ),
-      ],
     );
   }
 
@@ -513,56 +491,17 @@ class _TrainingSummaryState extends State<TrainingSummary> {
       ),
     );
   }
-}
 
-
-/*
-  import 'package:flutter/material.dart';
-
-class TrainingSummary extends StatelessWidget {
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(training['name']!),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Status: ${training['status']}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Start Date: ${training['startDate']}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'End Date: ${training['endDate']}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Trainer: ${training['trainer']}',
-              style: TextStyle(fontSize: 18),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Venue: ${training['venue']}',
-              style: TextStyle(fontSize: 18),
-            ),
-            // Add more fields if necessary
-          ],
-        ),
-      ),
-    );
+  Color _getStatusColor(String? status) {
+    switch (status) {
+      case 'Completed':
+        return Colors.green;
+      case 'Pending':
+        return Colors.orange;
+      case 'Not Started':
+        return Colors.red;
+      default:
+        return Colors.black;
+    }
   }
 }
-
- */
